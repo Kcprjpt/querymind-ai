@@ -1,8 +1,7 @@
 [build]
-  base = "querymind-ai"
   command = "npm run build"
-  publish = "querymind-ai/dist"
-  functions = "querymind-ai/netlify/functions"
+  publish = "dist"
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/*"
