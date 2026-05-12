@@ -255,10 +255,11 @@ export default function App() {
   useEffect(() => { endRef.current?.scrollIntoView({behavior:"smooth"}); }, [msgs, loading]);
 
   const callAPI = async (question, type) => {
+    const body = JSON.stringify({ question: question, type: type });
     const res = await fetch("/api/chat", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({question, type}),
+      headers: {"Content-Type":"application/json","Accept": "application/json",},
+      body: body,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
