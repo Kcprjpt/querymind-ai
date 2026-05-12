@@ -1,6 +1,23 @@
-export default async (req) => {
+export default async (req, context) => {
   try {
-    const { question, type } = await req.json();
+    // Body text pehle lo, phir parse karo
+    const bodyText = await req.text();
+    
+    if (!bodyText) {
+      return new Response(
+        JSON.stringify({ error: "Empty request body" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const { question, type } = JSON.parse(bodyText);
+
+    if (!question) {
+      return new Response(
+        JSON.stringify({ error: "Question is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     const systemPrompt = type === "sql"
       ? `You are a senior SQL expert. Convert natural language to optimized PostgreSQL.
