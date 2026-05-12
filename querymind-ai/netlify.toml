@@ -1,0 +1,10 @@
+[build]
+  base = "querymind-ai"
+  command = "npm run build"
+  publish = "querymind-ai/dist"
+  functions = "querymind-ai/netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
