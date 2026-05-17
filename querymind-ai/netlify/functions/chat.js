@@ -1,8 +1,7 @@
 export default async (req, context) => {
   try {
-    // Body text pehle lo, phir parse karo
     const bodyText = await req.text();
-    
+
     if (!bodyText) {
       return new Response(
         JSON.stringify({ error: "Empty request body" }),
@@ -32,18 +31,19 @@ Help users analyze business data, generate SQL queries, and surface actionable i
 Respond professionally and concisely. When generating SQL, use a code block.
 Always end with one helpful follow-up suggestion.`;
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
+        model: "gpt-3.5-turbo",
         max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: "user", content: question }],
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: question }
+        ],
       }),
     });
 
@@ -56,7 +56,7 @@ Always end with one helpful follow-up suggestion.`;
       );
     }
 
-    const reply = data.content?.[0]?.text || "No response received.";
+    const reply = data.choices?.[0]?.message?.content || "No response received.";
     return new Response(
       JSON.stringify({ reply }),
       { status: 200, headers: { "Content-Type": "application/json" } }
